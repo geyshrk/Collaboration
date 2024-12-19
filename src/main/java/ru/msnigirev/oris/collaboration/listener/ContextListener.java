@@ -34,11 +34,6 @@ public class ContextListener implements ServletContextListener {
         Flyway flyway = Flyway.configure()
                 .baselineOnMigrate(true)
                 .dataSource(configuration.hikariDataSource())
-//                .dataSource(
-//                        properties.getProperty("database.url"),
-//                        properties.getProperty("database.username"),
-//                        properties.getProperty("database.password")
-//                )
                 .load();
         flyway.migrate();
         UserRepository userRepository =
