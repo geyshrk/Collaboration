@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="false"%>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -58,7 +58,7 @@
 <body>
 <div class="container">
     <h2>Вход в аккаунт</h2>
-    <form action="loginServlet" method="post">
+    <form action="usercheck" method="post">
         <div class="form-group">
             <label for="username">Логин:</label>
             <input type="text" id="username" name="username" required>
@@ -69,7 +69,7 @@
         </div>
         <button type="submit">Войти</button>
     </form>
-    <div class="link">Нет аккаунта? <a href="/views/register.jsp">Зарегистрируйтесь</a></div>
+    <div class="link">Нет аккаунта? <a href="/collaboration/registerpage">Зарегистрируйтесь</a></div>
 </div>
 </body>
 </html>

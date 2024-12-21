@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" session="false"%>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -42,7 +42,7 @@
 <body>
 <div class="container">
   <h1>Профиль</h1>
-  <img src="<%= request.getAttribute("avatar") %>" alt="Аватар" class="avatar"> <!-- Замените на путь к вашей аватарке -->
+  <img src="<%= request.getAttribute("avatar") %>" alt="Аватар" class="avatar">
   <h2><%= request.getAttribute("name") %></h2>
   <h3><%= request.getAttribute("username") %></h3>
 

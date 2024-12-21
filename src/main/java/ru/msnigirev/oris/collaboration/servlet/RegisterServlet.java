@@ -18,15 +18,16 @@ public class RegisterServlet extends HttpServlet {
         BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder();
         try {
             String username = req.getParameter("username");
+            String publicName = req.getParameter("publicName");
             String email = req.getParameter("email");
-            String phoneNumber = req.getParameter("phoneNumber");
+            String phone = req.getParameter("phone");
             String password = bCrypt.encode(req.getParameter("password"));
 
-            userService.addNewUser(username, email, phoneNumber, password);
+            userService.addNewUser(username, publicName, email, phone, password);
 
-            res.sendRedirect("/login");
+            res.sendRedirect("/collaboration/login");
         } catch (IOException | RuntimeException e) {
-            res.sendRedirect("/registerpage");
+            res.sendRedirect("/collaboration/registerpage");
         }
     }
 }

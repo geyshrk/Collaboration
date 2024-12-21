@@ -18,8 +18,10 @@ public class AuthorisationFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        if (req.getServletPath().startsWith("/login") || req.getServletPath().startsWith("/register") ||
-                req.getServletPath().startsWith("/usercheck")) {
+        if (req.getServletPath().equals("/login") ||
+                req.getServletPath().equals("/registerpage") ||
+                req.getServletPath().equals("/register") ||
+                req.getServletPath().equals("/usercheck")) {
             chain.doFilter(req, res);
         } else {
             getResource(req, res, chain);
@@ -42,14 +44,15 @@ public class AuthorisationFilter extends HttpFilter {
             if (csrfToken != null) {
                 UserService userService = (UserService) req.getServletContext().getAttribute("userService");
                 String actualToken = csrfToken.getValue();
-                if (userService.sessionIdExists(actualToken)) {
-                    req.getSession();
+                if (userService.csrfTokenExists(actualToken)) {
+                    String username = userService.getUsernameByToken(csrfToken.getValue());
+                    req.getSession().setAttribute("username", username);
                     chain.doFilter(req, res);
                 } else {
                     deleteCookie(csrfToken, res);
                 }
             } else {
-                res.sendRedirect("/login");
+                res.sendRedirect("/collaboration/login");
             }
         }
     }

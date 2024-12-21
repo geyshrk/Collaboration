@@ -8,11 +8,13 @@ public interface UserRepository extends CrudRepository<User, String> {
 
     List<User> getAllByName(String name);
 
-    void deleteSessionId(String sessionId);
+    String getUsernameByToken(String csrfToken);
 
-    void addSessionId(String sessionId, String username);
+    void deleteCsrfToken(String csrfToken);
 
-    boolean sessionIdExists(String sessionId);
+    void addCsrfToken(String csrfToken, String username);
 
-    void addNewUser(String username, String email, String phoneNumber, String password);
+    boolean csrfTokenExists(String csrfToken);
+
+    void addNewUser(String username, String publicName, String email, String phoneNumber, String password);
 }

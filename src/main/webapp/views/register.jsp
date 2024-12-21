@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="false"%>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -60,10 +60,14 @@
 <body>
 <div class="container">
     <h2>Регистрация</h2>
-    <form action="registerServlet" method="post">
+    <form action="register" method="post">
         <div class="form-group">
             <label for="username">Логин:</label>
             <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="publicName">Публичное имя:</label>
+            <input type="text" id="publicName" name="publicName" required>
         </div>
         <div class="form-group">
             <label for="password">Пароль:</label>
@@ -79,7 +83,7 @@
         </div>
         <button type="submit">Зарегистрироваться</button>
     </form>
-    <div class="link">Уже есть аккаунт? <a href="/views/login.jsp">Войдите</a></div>
+    <div class="link">Уже есть аккаунт? <a href="/collaboration/login">Войдите</a></div>
 </div>
 </body>
 </html>

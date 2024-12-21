@@ -32,9 +32,9 @@ public class LogoutServlet extends HttpServlet {
                 res.addCookie(cookie);
             }
 
-            userService.deleteSessionId(token);
+            userService.deleteCsrfToken(token);
 
-            res.sendRedirect("/login");
+            res.sendRedirect("/collaboration/login");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

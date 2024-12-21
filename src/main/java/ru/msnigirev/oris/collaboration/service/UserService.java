@@ -14,11 +14,15 @@ public interface UserService {
 
     User getUser(String username);
 
-    void deleteSessionId(String sessionId);
+    UserDto getUserDto(String username);
 
-    void addSessionId(String sessionId, String username);
+    String getUsernameByToken(String csrfToken);
 
-    void addNewUser(String username, String email, String phoneNumber, String password);
+    void deleteCsrfToken(String csrfToken);
 
-    boolean sessionIdExists(String sessionId);
+    void addCsrfToken(String csrfToken, String username);
+
+    void addNewUser(String username, String publicName, String email, String phoneNumber, String password);
+
+    boolean csrfTokenExists(String csrfToken);
 }

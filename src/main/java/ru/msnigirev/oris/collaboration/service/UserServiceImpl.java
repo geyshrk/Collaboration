@@ -32,25 +32,39 @@ public class UserServiceImpl implements UserService {
     public User getUser(String username) {
         return userRepository.getById(username).orElse(null);
     }
+    @Override
+    public UserDto getUserDto(String username) {
+        User user = userRepository.getById(username).orElse(null);
+        if (user == null) return null;
+        return new UserDto(user.getUsername(),
+                user.getPublicName(),
+                user.getDescription(),
+                user.getAvatarUrl());
+    }
+    @Override
+    public String getUsernameByToken(String csrfToken) {
+        return userRepository.getUsernameByToken(csrfToken);
+    }
+
 
     @Override
-    public void deleteSessionId(String sessionId) {
-        userRepository.deleteSessionId(sessionId);
+    public void deleteCsrfToken(String csrfToken) {
+        userRepository.deleteCsrfToken(csrfToken);
     }
 
     @Override
-    public void addSessionId(String sessionId, String username) {
-        userRepository.addSessionId(sessionId, username);
+    public void addCsrfToken(String csrfToken, String username) {
+        userRepository.addCsrfToken(csrfToken, username);
     }
 
     @Override
-    public void addNewUser(String username, String email, String phoneNumber, String password) {
-        userRepository.addNewUser(username, email, phoneNumber, password);
+    public void addNewUser(String username, String publicName, String email, String phoneNumber, String password) {
+        userRepository.addNewUser(username, publicName, email, phoneNumber, password);
     }
 
     @Override
-    public boolean sessionIdExists(String sessionId) {
-        return userRepository.sessionIdExists(sessionId);
+    public boolean csrfTokenExists(String sessionId) {
+        return userRepository.csrfTokenExists(sessionId);
     }
 
 }

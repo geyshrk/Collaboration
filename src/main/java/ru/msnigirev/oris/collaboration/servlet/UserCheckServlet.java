@@ -32,13 +32,13 @@ public class UserCheckServlet extends HttpServlet {
                     Cookie cookie = new Cookie("csrf_token", csrfToken);
                     cookie.setMaxAge(60*60*24*3);
                     res.addCookie(cookie);
-                    userService.addSessionId(csrfToken, username);
+                    userService.addCsrfToken(csrfToken, username);
                 }
-                req.getSession();
+                req.getSession().setAttribute("username", username);
 
-                res.sendRedirect("/users");
+                res.sendRedirect("/collaboration/users");
             } else {
-                res.sendRedirect("/login");
+                res.sendRedirect("/collaboration/login");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

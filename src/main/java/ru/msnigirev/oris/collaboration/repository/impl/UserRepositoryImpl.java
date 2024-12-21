@@ -18,13 +18,14 @@ public class UserRepositoryImpl implements UserRepository {
     private final RowMapper<User> rowMapper;
 
     private final static String GET_BY_USERNAME = "select * from users where username = ?";
+    private final static String GET_USERNAME_BY_TOKEN = "select username from users where csrf_token = ?";
     private final static String GET_ALL = "select * from users";
     private final static String GET_ALL_PAGEABLE = "select * from users offset ? limit ?";
-    private final static String DELETE_SESSION_ID = "UPDATE users SET session_id = NULL WHERE session_id = ?";
-    private final static String ADD_SESSION_ID = "UPDATE users SET session_id = ? WHERE username = ?";
-    private final static String GET_BY_ID_SESSION = "select * from users where session_id = ?";
-    private final static String ADD_NEW_USER = "INSERT INTO users (username, email, phone_number, password) " +
-            "VALUES (?, ?, ?, ?);";
+    private final static String DELETE_CSRF_TOKEN = "UPDATE users SET csrf_token = NULL WHERE csrf_token = ?";
+    private final static String ADD_CSRF_TOKEN = "UPDATE users SET csrf_token = ? WHERE username = ?";
+    private final static String GET_BY_CSRF_TOKEN = "select * from users where csrf_token = ?";
+    private final static String ADD_NEW_USER = "INSERT INTO users (username, public_name, email, phone, password) " +
+            "VALUES (?, ?, ?, ?, ?);";
 
     public UserRepositoryImpl(DataSource dataSource, RowMapper<User> rowMapper) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -32,8 +33,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> getById(String id) {
-        List<User> users = jdbcTemplate.query(GET_BY_USERNAME, rowMapper, id);
+    public Optional<User> getById(String username) {
+        List<User> users = jdbcTemplate.query(GET_BY_USERNAME, rowMapper, username);
         return optionalSingleResult(users);
     }
 
@@ -72,24 +73,31 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void deleteSessionId(String sessionId) {
-        jdbcTemplate.update(DELETE_SESSION_ID, sessionId);
+    public String getUsernameByToken(String csrfToken) {
+        User user = jdbcTemplate.query(GET_USERNAME_BY_TOKEN, rowMapper, csrfToken).stream().findFirst().orElse(null);
+        if (user == null) return null;
+        return user.getUsername();
     }
 
     @Override
-    public void addSessionId(String sessionId, String username) {
-        jdbcTemplate.update(ADD_SESSION_ID, sessionId, username);
+    public void deleteCsrfToken(String csrfToken) {
+        jdbcTemplate.update(DELETE_CSRF_TOKEN, csrfToken);
     }
 
     @Override
-    public boolean sessionIdExists(String sessionId) {
-        List<User> users = jdbcTemplate.query(GET_BY_ID_SESSION, rowMapper, sessionId);
+    public void addCsrfToken(String csrfToken, String username) {
+        jdbcTemplate.update(ADD_CSRF_TOKEN, csrfToken, username);
+    }
+
+    @Override
+    public boolean csrfTokenExists(String csrfToken) {
+        List<User> users = jdbcTemplate.query(GET_BY_CSRF_TOKEN, rowMapper, csrfToken);
         return optionalSingleResult(users).isPresent();
     }
 
     @Override
-    public void addNewUser(String username, String email, String phoneNumber, String password) {
-        jdbcTemplate.update(ADD_NEW_USER, username, email, phoneNumber, password);
+    public void addNewUser(String username, String publicName, String email, String phoneNumber, String password) {
+        jdbcTemplate.update(ADD_NEW_USER, username, publicName, email, phoneNumber, password);
     }
 
 }

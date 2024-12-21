@@ -4,8 +4,9 @@ CREATE TABLE users (
                        public_name VARCHAR(50) NOT NULL,
                        password VARCHAR(255) NOT NULL,
                        email VARCHAR(100) NOT NULL UNIQUE,
-                       phone VARCHAR(15),
+                       phone VARCHAR(15) NOT NULL UNIQUE,
                        avatar_url VARCHAR(255),
+                       csrf_token uuid,
                        description TEXT
 );
 CREATE TABLE projects (
@@ -13,7 +14,14 @@ CREATE TABLE projects (
                           project_name VARCHAR(100) NOT NULL,
                           description TEXT,
                           creator_id INT,
-                          FOREIGN KEY (creator_id) REFERENCES users(user_id) ON DELETE CASCADE
+                          subject_id INT,
+                          institute_id INT,
+                          teacher_id INT,
+                          year INT,
+                          FOREIGN KEY (creator_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                          FOREIGN KEY (subject_id) REFERENCES subjects(id),
+                          FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+                          FOREIGN KEY (institute_id) REFERENCES institutes(id)
 );
 CREATE TABLE project_admins (
                                 project_id INT,
@@ -31,20 +39,18 @@ CREATE TABLE project_materials (
                                    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                    FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
 );
-CREATE TABLE project_sections (
-                                  section_id SERIAL PRIMARY KEY,
-                                  project_id INT,
-                                  section_name VARCHAR(100),
-                                  description TEXT,
-                                  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+CREATE TABLE teachers (
+                          id SERIAL PRIMARY KEY,
+                          name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE project_tasks (
-                               task_id SERIAL PRIMARY KEY,
-                               section_id INT,
-                               task_name VARCHAR(100),
-                               description TEXT,
-                               status VARCHAR(20) DEFAULT 'pending',  -- Статус задачи (например, pending, in_progress, completed)
-                               due_date DATE,
-                               FOREIGN KEY (section_id) REFERENCES project_sections(section_id) ON DELETE CASCADE
+CREATE TABLE subjects (
+                          id SERIAL PRIMARY KEY,
+                          name VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE institutes (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL
+);
+
