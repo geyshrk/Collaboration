@@ -10,8 +10,8 @@ CREATE TABLE users (
                        description TEXT
 );
 CREATE TABLE projects (
-                          project_id SERIAL PRIMARY KEY,
-                          project_name VARCHAR(100) NOT NULL,
+                          id SERIAL PRIMARY KEY,
+                          name VARCHAR(100) NOT NULL,
                           description TEXT,
                           creator_id INT,
                           subject_id INT,
@@ -27,7 +27,7 @@ CREATE TABLE project_admins (
                                 project_id INT,
                                 user_id INT,
                                 PRIMARY KEY (project_id, user_id),
-                                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
+                                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
                                 FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 CREATE TABLE project_materials (
@@ -37,7 +37,7 @@ CREATE TABLE project_materials (
                                    material_url VARCHAR(255),   -- URL или путь к материалу
                                    description TEXT,
                                    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                   FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+                                   FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 CREATE TABLE teachers (
                           id SERIAL PRIMARY KEY,

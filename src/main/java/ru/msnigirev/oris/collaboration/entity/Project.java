@@ -10,6 +10,7 @@ import java.util.Set;
 @Getter
 @Builder
 public class Project {
+    private int id;
     private String name;
     private String description;
     private int creatorId;
