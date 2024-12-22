@@ -9,6 +9,20 @@ CREATE TABLE users (
                        csrf_token uuid,
                        description TEXT
 );
+CREATE TABLE teachers (
+                          id SERIAL PRIMARY KEY,
+                          name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE subjects (
+                          id SERIAL PRIMARY KEY,
+                          name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE institutes (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL
+);
 CREATE TABLE projects (
                           id SERIAL PRIMARY KEY,
                           name VARCHAR(100) NOT NULL,
@@ -39,18 +53,5 @@ CREATE TABLE project_materials (
                                    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
-CREATE TABLE teachers (
-                          id SERIAL PRIMARY KEY,
-                          name VARCHAR(255) NOT NULL
-);
 
-CREATE TABLE subjects (
-                          id SERIAL PRIMARY KEY,
-                          name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE institutes (
-                            id SERIAL PRIMARY KEY,
-                            name VARCHAR(255) NOT NULL
-);
 

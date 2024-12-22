@@ -43,6 +43,10 @@
 <div class="container">
   <h1>Профиль</h1>
   <img src="<%= request.getAttribute("avatar") %>" alt="Аватар" class="avatar">
+  <form action="avatarupload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" required>
+    <input type="submit" value="Загрузить">
+  </form>
   <h2><%= request.getAttribute("name") %></h2>
   <h3><%= request.getAttribute("username") %></h3>
 

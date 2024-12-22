@@ -11,14 +11,14 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class Project {
+public class ProjectDto {
     private int id;
     private String name;
     private String description;
     private int creatorId;
-    private int teacherId;
-    private int instituteId;
-    private int subjectId;
+    private String teacher;
+    private String institute;
+    private String subject;
     private int year;
     // url + file
     private Map<String, File> projectStructure;

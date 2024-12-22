@@ -3,8 +3,9 @@ package ru.msnigirev.oris.collaboration.repository.interfaces;
 import ru.msnigirev.oris.collaboration.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<User, String> {
+public interface UserRepository extends CrudRepository<User, Integer> {
 
     List<User> getAllByName(String name);
 
@@ -17,4 +18,8 @@ public interface UserRepository extends CrudRepository<User, String> {
     boolean csrfTokenExists(String csrfToken);
 
     void addNewUser(String username, String publicName, String email, String phoneNumber, String password);
+
+    void addAvatar(String url, String username);
+
+    Optional<User> getByUsername(String username);
 }

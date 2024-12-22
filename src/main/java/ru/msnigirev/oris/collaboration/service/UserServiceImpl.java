@@ -30,11 +30,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String username) {
-        return userRepository.getById(username).orElse(null);
+        return userRepository.getByUsername(username).orElse(null);
     }
     @Override
     public UserDto getUserDto(String username) {
-        User user = userRepository.getById(username).orElse(null);
+        User user = userRepository.getByUsername(username).orElse(null);
         if (user == null) return null;
         return new UserDto(user.getUsername(),
                 user.getPublicName(),
@@ -65,6 +65,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean csrfTokenExists(String sessionId) {
         return userRepository.csrfTokenExists(sessionId);
+    }
+
+    @Override
+    public void addAvatar(String url, String username) {
+        userRepository.addAvatar(url, username);
     }
 
 }

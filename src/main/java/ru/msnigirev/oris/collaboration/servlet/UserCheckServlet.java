@@ -36,7 +36,7 @@ public class UserCheckServlet extends HttpServlet {
                 }
                 req.getSession().setAttribute("username", username);
 
-                res.sendRedirect("/collaboration/users");
+                res.sendRedirect("/collaboration/profile");
             } else {
                 res.sendRedirect("/collaboration/login");
             }

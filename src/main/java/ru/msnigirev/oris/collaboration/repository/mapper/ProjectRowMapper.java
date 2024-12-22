@@ -16,6 +16,9 @@ public class ProjectRowMapper implements RowMapper<Project> {
                 .description(resultSet.getString("description"))
                 .creatorId(resultSet.getInt("creator_id"))
                 .year(resultSet.getInt("year"))
+                .instituteId(resultSet.getInt("institute_id"))
+                .teacherId(resultSet.getInt("teacher_id"))
+                .subjectId(resultSet.getInt("subject_id"))
                 .build();
     }
 
