@@ -27,6 +27,7 @@ public class RegisterServlet extends HttpServlet {
 
             res.sendRedirect("/collaboration/login");
         } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
             res.sendRedirect("/collaboration/registerpage");
         }
     }

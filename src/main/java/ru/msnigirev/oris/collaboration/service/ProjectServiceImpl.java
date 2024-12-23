@@ -1,23 +1,25 @@
 package ru.msnigirev.oris.collaboration.service;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import ru.msnigirev.oris.collaboration.entity.Project;
-import ru.msnigirev.oris.collaboration.entity.ProjectDto;
+import ru.msnigirev.oris.collaboration.dto.ProjectDto;
 import ru.msnigirev.oris.collaboration.entity.User;
 import ru.msnigirev.oris.collaboration.repository.impl.InstituteRepository;
-import ru.msnigirev.oris.collaboration.repository.impl.ProjectAdminsRepositoryImpl;
 import ru.msnigirev.oris.collaboration.repository.impl.SubjectRepository;
 import ru.msnigirev.oris.collaboration.repository.impl.TeacherRepository;
 import ru.msnigirev.oris.collaboration.repository.interfaces.ProjectAdminsRepository;
 import ru.msnigirev.oris.collaboration.repository.interfaces.ProjectRepository;
 import ru.msnigirev.oris.collaboration.repository.interfaces.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
+@Builder
 public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
@@ -67,6 +69,54 @@ public class ProjectServiceImpl implements ProjectService {
                 .subject(subjectRepository.getById(project.getTeacherId()))
                 .year(project.getYear())
                 .admins(project.getAdmins())
+                .folder(project.getFolder())
+                .avatar(project.getAvatar())
                 .build();
     }
+
+    @Override
+    public List<Project> getAllByAdmin(int adminId) {
+        List<Integer> projects = projectAdminsRepository.getProjects(adminId);
+        return projects.stream()
+                .map(projectRepository::getById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addNewProject(ProjectDto projectDto) {
+        int subjectId = subjectRepository.getByName(projectDto.getSubject());
+        if (subjectId == 0) {
+            subjectRepository.add(projectDto.getSubject());
+            subjectId = subjectRepository.getByName(projectDto.getSubject());
+        }
+        int instituteId = instituteRepository.getByName(projectDto.getInstitute());
+        if (instituteId == 0) {
+            instituteRepository.add(projectDto.getInstitute());
+            instituteId = instituteRepository.getByName(projectDto.getInstitute());
+        }
+        int teacherId = teacherRepository.getByName(projectDto.getTeacher());
+        if (teacherId == 0) {
+            teacherRepository.add(projectDto.getTeacher());
+            teacherId = teacherRepository.getByName(projectDto.getTeacher());
+        }
+
+        Project project = Project.builder()
+                .name(projectDto.getName())
+                .description(projectDto.getDescription())
+                .creatorId(projectDto.getCreatorId())
+                .subjectId(subjectId)
+                .instituteId(instituteId)
+                .teacherId(teacherId)
+                .year(projectDto.getYear())
+                .folder(projectDto.getFolder())
+                .admins(projectDto.getAdmins())
+                .avatar(projectDto.getAvatar())
+                .build();
+        projectRepository.create(project);
+        projectAdminsRepository.addNewRelation(projectRepository.getMaxId(), project.getCreatorId());
+    }
+
+
 }

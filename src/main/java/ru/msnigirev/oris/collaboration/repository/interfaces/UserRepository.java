@@ -22,4 +22,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     void addAvatar(String url, String username);
 
     Optional<User> getByUsername(String username);
+
+    String getUsernameById(int id);
 }

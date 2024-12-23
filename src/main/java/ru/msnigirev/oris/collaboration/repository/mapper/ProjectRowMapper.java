@@ -19,6 +19,8 @@ public class ProjectRowMapper implements RowMapper<Project> {
                 .instituteId(resultSet.getInt("institute_id"))
                 .teacherId(resultSet.getInt("teacher_id"))
                 .subjectId(resultSet.getInt("subject_id"))
+                .avatar(resultSet.getString("avatar_url"))
+                .folder(resultSet.getString("folder"))
                 .build();
     }
 

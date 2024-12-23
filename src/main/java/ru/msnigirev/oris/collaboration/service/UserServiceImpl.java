@@ -21,7 +21,8 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers(int offset, int size) {
         List<User> all = userRepository.getAll(offset, size);
         return all.stream()
-                .map(user -> new UserDto(user.getUsername(),
+                .map(user -> new UserDto(user.getId(),
+                        user.getUsername(),
                         user.getPublicName(),
                         user.getDescription(),
                         user.getAvatarUrl()))
@@ -36,7 +37,8 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserDto(String username) {
         User user = userRepository.getByUsername(username).orElse(null);
         if (user == null) return null;
-        return new UserDto(user.getUsername(),
+        return new UserDto(user.getId(),
+                user.getUsername(),
                 user.getPublicName(),
                 user.getDescription(),
                 user.getAvatarUrl());
@@ -44,6 +46,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUsernameByToken(String csrfToken) {
         return userRepository.getUsernameByToken(csrfToken);
+    }
+
+    @Override
+    public String getUsernameById(int id) {
+        return userRepository.getUsernameById(id);
     }
 
 

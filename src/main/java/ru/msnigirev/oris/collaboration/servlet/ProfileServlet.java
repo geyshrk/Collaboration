@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.msnigirev.oris.collaboration.dto.UserDto;
+import ru.msnigirev.oris.collaboration.service.ProjectService;
 import ru.msnigirev.oris.collaboration.service.UserService;
 
 import java.io.IOException;
@@ -15,7 +16,9 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         UserService userService = (UserService) req.getServletContext().getAttribute("userService");
+        ProjectService projectService = (ProjectService) req.getServletContext().getAttribute("projectService");
         UserDto user = userService.getUserDto((String) req.getSession().getAttribute("username"));
+        req.setAttribute("projects", projectService.getAllByAdmin(user.getId()));
         req.setAttribute("name", user.getPublicName());
         req.setAttribute("avatar", user.getAvatarUrl());
         req.setAttribute("username", user.getUsername());
@@ -38,4 +41,10 @@ public class ProfileServlet extends HttpServlet {
           <h2>Описание профиля:</h2>
          */
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        doGet(req, res);
+    }
+
 }

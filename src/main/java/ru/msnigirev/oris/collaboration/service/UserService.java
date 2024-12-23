@@ -18,6 +18,8 @@ public interface UserService {
 
     String getUsernameByToken(String csrfToken);
 
+    String getUsernameById(int id);
+
     void deleteCsrfToken(String csrfToken);
 
     void addCsrfToken(String csrfToken, String username);

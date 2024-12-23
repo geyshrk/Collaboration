@@ -1,3 +1,5 @@
+<%@ page import="ru.msnigirev.oris.collaboration.entity.Project" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" session="false"%>
 <!DOCTYPE html>
 <html lang="ru">
@@ -47,14 +49,29 @@
     <input type="file" name="file" required>
     <input type="submit" value="Загрузить">
   </form>
-  <h2><%= request.getAttribute("name") %></h2>
-  <h3><%= request.getAttribute("username") %></h3>
+  <h2><%= "Имя: " + request.getAttribute("name") %></h2>
+  <h3><%= "Username: @" + request.getAttribute("username") %></h3>
 
   <h2>Самые популярные проекты:</h2>
-  <ul class="popular-projects">
-    <li>Популярный проект 1</li>
-    <li>Популярный проект 2</li>
-    <li>Популярный проект 3</li>
+  <ul>
+    <%
+      List<Project> projects = (List<Project>) request.getAttribute("projects");
+      if (projects != null && !projects.isEmpty()) {
+          for (Project project : projects) {
+            String name = project.getName();
+            int id = project.getId();
+    %>
+    <li>
+      <a href="${pageContext.request.contextPath}/project?id=<%= id %>"><%= name %> </a>
+    </li>
+    <%
+      }
+    } else {
+    %>
+    <li>У пользователя пока нет проектов</li>
+    <%
+    }
+    %>
   </ul>
 
   <h2>Описание профиля:</h2>

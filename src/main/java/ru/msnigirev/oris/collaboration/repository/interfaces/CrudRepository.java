@@ -5,6 +5,7 @@ import java.util.Optional;
 
 
 interface CrudRepository<T, ID> {
+    void create(T data);
 
     Optional<T> getById(ID id);
 

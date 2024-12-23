@@ -9,8 +9,11 @@ import java.util.Set;
 public interface ProjectRepository extends CrudRepository<Project, Integer>{
     List<Project> getAllById(int id);
 
-    List<Project> getAll(int id, int offset, int size);
+    List<Project> getAll(int projectId, int offset, int size);
 
+    List<Project> getAllUsersProject(int projectId, int offset, int size);
 
+    List<Project> getAllUsersProject(int projectId);
 
+    int getMaxId();
 }

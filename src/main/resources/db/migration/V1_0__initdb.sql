@@ -32,6 +32,8 @@ CREATE TABLE projects (
                           institute_id INT,
                           teacher_id INT,
                           year INT,
+                          folder varchar(255),
+                          avatar_url varchar(255),
                           FOREIGN KEY (creator_id) REFERENCES users(user_id) ON DELETE CASCADE,
                           FOREIGN KEY (subject_id) REFERENCES subjects(id),
                           FOREIGN KEY (teacher_id) REFERENCES teachers(id),
@@ -43,15 +45,6 @@ CREATE TABLE project_admins (
                                 PRIMARY KEY (project_id, user_id),
                                 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
                                 FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-CREATE TABLE project_materials (
-                                   material_id SERIAL PRIMARY KEY,
-                                   project_id INT,
-                                   material_type VARCHAR(50),  -- Тип материала (например, document, image, video)
-                                   material_url VARCHAR(255),   -- URL или путь к материалу
-                                   description TEXT,
-                                   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                   FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 
 

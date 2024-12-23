@@ -18,7 +18,10 @@ public class UserRepositoryImpl implements UserRepository {
     private final RowMapper<User> rowMapper;
 
     private final static String ADD_AVATAR = "UPDATE users SET avatar_url = ? WHERE username = ?";
-    private final static String GET_BY_ID = "select * from users where id = ?";
+
+    private final static String GET_USERNAME_BY_ID = "select username from users where user_id = ?";
+
+    private final static String GET_BY_ID = "select * from users where user_id = ?";
     private final static String GET_BY_USERNAME = "select * from users where username = ?";
     private final static String GET_USERNAME_BY_TOKEN = "select username from users where csrf_token = ?";
     private final static String GET_ALL = "select * from users";
@@ -35,8 +38,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public void create(User data) {
+
+    }
+
+    @Override
     public Optional<User> getById(Integer id) {
-        List<User> users = jdbcTemplate.query(GET_BY_USERNAME, rowMapper, id);
+        List<User> users = jdbcTemplate.query(GET_BY_ID, rowMapper, id);
         return optionalSingleResult(users);
     }
 
@@ -111,6 +119,11 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> getByUsername(String username) {
         List<User> users = jdbcTemplate.query(GET_BY_USERNAME, rowMapper, username);
         return optionalSingleResult(users);
+    }
+
+    @Override
+    public String getUsernameById(int id) {
+        return jdbcTemplate.queryForObject(GET_USERNAME_BY_ID, String.class, id);
     }
 
 }

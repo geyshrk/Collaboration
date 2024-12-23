@@ -1,11 +1,10 @@
-package ru.msnigirev.oris.collaboration.entity;
+package ru.msnigirev.oris.collaboration.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import ru.msnigirev.oris.collaboration.entity.User;
 
-import java.io.File;
-import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -20,16 +19,20 @@ public class ProjectDto {
     private String institute;
     private String subject;
     private int year;
-    // url + file
-    private Map<String, File> projectStructure;
+    String avatar;
+    String folder;
     private Set<User> admins;
     /*
-    CREATE TABLE projects (
-                          project_id SERIAL PRIMARY KEY,
-                          project_name VARCHAR(100) NOT NULL,
-                          description TEXT,
-                          creator_id INT NOT NULL,
-                          FOREIGN KEY (creator_id) REFERENCES users(user_id) ON DELETE CASCADE
+    CREATE TABLE users (
+                       user_id SERIAL PRIMARY KEY,
+                       username VARCHAR(50) NOT NULL UNIQUE,
+                       public_name VARCHAR(50) NOT NULL,
+                       password VARCHAR(255) NOT NULL,
+                       email VARCHAR(100) NOT NULL UNIQUE,
+                       phone VARCHAR(15) NOT NULL UNIQUE,
+                       avatar_url VARCHAR(255),
+                       csrf_token uuid,
+                       description TEXT
     );
      */
 }
