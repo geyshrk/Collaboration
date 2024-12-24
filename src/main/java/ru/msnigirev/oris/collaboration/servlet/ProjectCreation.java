@@ -15,13 +15,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @MultipartConfig
 @WebServlet(name = "createProject", value = "/createProject")
 public class ProjectCreation extends HttpServlet {
-    private static final String folders = "/Users/misha/IdeaProjects/ITIS/Collaboration/.server/projects/folders/";
+    private static final String folders = "/Users/misha/IdeaProjects/ITIS/Collaboration/src/main/webapp/projects/folders/";
+    private static final String serverFolders = "/projects/folders/";
     private static final String avatars = "/Users/misha/IdeaProjects/ITIS/Collaboration/src/main/webapp/projects/avatars/";
     private static final String avatarsServer = "/projects/avatars/";
 
@@ -36,15 +38,16 @@ public class ProjectCreation extends HttpServlet {
 
         UserService userService = (UserService) req.getServletContext().getAttribute("userService");
 
-        // Получаем ID создателя проекта (например, из сессии пользователя)
+        // Получаем ID создателя проекта через юзернейм в сессии
         int creatorId = userService.getUser((String) req.getSession().getAttribute("username")).getId();
 
         String avatarUrl = null;
         if (req.getPart("avatar") != null) {
-            avatarUrl = saveAvatar(req.getPart("avatar"), req.getContextPath());
+            avatarUrl = saveAvatar(req.getPart("avatar"), req.getServletContext().getRealPath("/"), projectName);
         }
-
-        // Создаем объект ProjectDto
+        File folder = new File(serverFolders + UUID.randomUUID() + "_" + projectName);
+        if (!folder.exists()) folder.mkdirs();
+        // Собираем инфу в ProjectDto
         ProjectDto projectDto = ProjectDto.builder()
                 .name(projectName)
                 .description(projectDescription)
@@ -53,33 +56,35 @@ public class ProjectCreation extends HttpServlet {
                 .subject(subjectName)
                 .institute(instituteName)
                 .year(year)
-                .folder(folders + UUID.randomUUID() + "_" + projectName)
+                .folder(folder.getAbsolutePath())
                 .avatar(avatarUrl)
                 .build();
-
+        File constFolder = new File(folders, folder.getName());
+        if (!constFolder.exists()) constFolder.mkdirs();
         // Сохраняем проект (например, в базе данных)
         ProjectService projectService = (ProjectService) req.getServletContext().getAttribute("projectService");
         projectService.addNewProject(projectDto);
 
         // Перенаправляем на страницу проекта или на страницу со списком проектов
-        res.sendRedirect(req.getContextPath() + "/projects");
+        res.sendRedirect(req.getContextPath() + "/profile");
     }
 
     // Метод для сохранения аватара в файловую систему и возврата его URL
-    private String saveAvatar(Part avatarPart, String contextPath) throws IOException {
+    private String saveAvatar(Part avatarPart, String contextPath, String projectName) throws IOException {
         File uploadDirFile = new File(avatars);
         if (!uploadDirFile.exists()) {
             uploadDirFile.mkdirs();  // Создаем директорию, если ее нет
         }
 
-        // Генерируем уникальное имя для аватара (например, используя UUID)
-        String avatarFileName = UUID.randomUUID() + "_" + avatarPart.getSubmittedFileName();
+        // Генерируем уникальное имя для аватара
+        String avatarFileName = UUID.randomUUID() + "_" + projectName;
         File avatarFile = new File(uploadDirFile, avatarFileName);
-        File avatarFileServer = new File(uploadDirFile, contextPath);
-        // Сохраняем аватар в файловую систему
+        File avatarFileServer = new File(contextPath + avatarsServer, avatarFileName);
+        // Сохраняем аватар
         avatarPart.write(avatarFile.getAbsolutePath());
-        Files.copy(avatarFile.toPath(), avatarFileServer.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
+        Path result = Files.copy(avatarFile.toPath(), avatarFileServer.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        System.out.println(result);
         // Возвращаем URL файла
         return avatarsServer + avatarFileName;
     }
