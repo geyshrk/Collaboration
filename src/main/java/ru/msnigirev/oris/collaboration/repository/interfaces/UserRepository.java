@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<User, Integer> {
 
-    List<User> getAllByName(String name);
+    String getAvatarPath(String username);
 
     String getUsernameByToken(String csrfToken);
 
@@ -17,7 +17,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     boolean csrfTokenExists(String csrfToken);
 
-    void addNewUser(String username, String publicName, String email, String phoneNumber, String password);
+    void registerNewUser(String username, String publicName, String email, String phoneNumber, String password);
 
     void addAvatar(String url, String username);
 

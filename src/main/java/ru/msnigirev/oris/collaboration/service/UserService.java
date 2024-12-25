@@ -24,9 +24,11 @@ public interface UserService {
 
     void addCsrfToken(String csrfToken, String username);
 
-    void addNewUser(String username, String publicName, String email, String phoneNumber, String password);
+    void registerNewUser(String username, String publicName, String email, String phoneNumber, String password);
 
     boolean csrfTokenExists(String csrfToken);
 
     void addAvatar(String url, String username);
+
+    String getAvatarPath(String username);
 }

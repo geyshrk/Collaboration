@@ -1,9 +1,11 @@
+<%@ page import="ru.msnigirev.oris.collaboration.entity.Project" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" session="false"%>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Начальное окно</title>
+    <title>Начальная страница</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,19 +36,28 @@
 </head>
 <body>
 <div class="container">
-    <h1>Начальное окно</h1>
-    <h2>Проекты, которые вы администрируете:</h2>
-    <ul class="project-list">
-        <li>Проект 1</li>
-        <li>Проект 2</li>
-        <li>Проект 3</li>
-    </ul>
+    <h1>Начальная страница</h1>
 
     <h2>Популярные проекты: </h2>
     <ul class="project-list">
-        <li>Проект A</li>
-        <li>Проект B</li>
-        <li>Проект C</li>
+        <%
+            List<Project> projects = (List<Project>) request.getAttribute("projects");
+            if (projects != null && !projects.isEmpty()) {
+                for (Project project : projects) {
+                    String name = project.getName();
+                    int id = project.getId();
+        %>
+        <li>
+            <a href="<%= request.getContextPath() %>/project?id=<%= id %>"><%= name %> </a>
+        </li>
+        <%
+            }
+        } else {
+        %>
+        <li>К сожалению, на сайте пока нет проектов</li>
+        <%
+            }
+        %>
     </ul>
 </div>
 </body>

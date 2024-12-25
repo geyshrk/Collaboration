@@ -6,8 +6,7 @@ CREATE TABLE users (
                        email VARCHAR(100) NOT NULL UNIQUE,
                        phone VARCHAR(15) NOT NULL UNIQUE,
                        avatar_url VARCHAR(255),
-                       csrf_token uuid,
-                       description TEXT
+                       csrf_token varchar(255)
 );
 CREATE TABLE teachers (
                           id SERIAL PRIMARY KEY,

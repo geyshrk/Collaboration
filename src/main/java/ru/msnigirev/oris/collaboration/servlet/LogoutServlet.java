@@ -15,6 +15,10 @@ import java.util.Optional;
 @WebServlet(value = "/logout", name = "logout")
 public class LogoutServlet extends HttpServlet {
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
+        doPost(req, res);
+    }
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         UserService userService = (UserService) req.getServletContext().getAttribute("userService");
         try {
@@ -34,7 +38,7 @@ public class LogoutServlet extends HttpServlet {
 
             userService.deleteCsrfToken(token);
 
-            res.sendRedirect("/collaboration/login");
+            res.sendRedirect(req.getContextPath() + "/login");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

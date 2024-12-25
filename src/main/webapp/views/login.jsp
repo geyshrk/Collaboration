@@ -67,9 +67,13 @@
             <label for="password">Пароль:</label>
             <input type="password" id="password" name="password" required>
         </div>
+        <div>
+            <input type="checkbox" name="rememberMe">
+            <label> Remember me </label>
+        </div>
         <button type="submit">Войти</button>
     </form>
-    <div class="link">Нет аккаунта? <a href="/collaboration/registerpage">Зарегистрируйтесь</a></div>
+    <div class="link">Нет аккаунта? <a href="${pageContext.request.contextPath}/registerpage">Зарегистрируйтесь</a></div>
 </div>
 </body>
 </html>

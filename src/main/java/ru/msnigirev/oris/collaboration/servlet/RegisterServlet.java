@@ -23,12 +23,12 @@ public class RegisterServlet extends HttpServlet {
             String phone = req.getParameter("phone");
             String password = bCrypt.encode(req.getParameter("password"));
 
-            userService.addNewUser(username, publicName, email, phone, password);
+            userService.registerNewUser(username, publicName, email, phone, password);
 
-            res.sendRedirect("/collaboration/login");
+            res.sendRedirect(req.getContextPath() + "/login");
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
-            res.sendRedirect("/collaboration/registerpage");
+            res.sendRedirect(req.getContextPath() + "/registerpage");
         }
     }
 }

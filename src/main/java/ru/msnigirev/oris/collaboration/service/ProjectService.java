@@ -13,4 +13,8 @@ public interface ProjectService {
     List<Project> getAllByAdmin(int adminId);
 
     void addNewProject(ProjectDto project);
+
+    public List<Project> getAll(int offset, int size);
+
+    List<Project> searchByName(String name);
 }

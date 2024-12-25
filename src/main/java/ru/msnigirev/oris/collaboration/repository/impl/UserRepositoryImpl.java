@@ -1,6 +1,7 @@
 package ru.msnigirev.oris.collaboration.repository.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,6 +23,10 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String GET_USERNAME_BY_ID = "select username from users where user_id = ?";
 
     private final static String GET_BY_ID = "select * from users where user_id = ?";
+    private final static String CREATE = "INSERT INTO users " +
+            "(username, public_name, password, email, phone, avatar_url, description) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?);";
+    private final static String GET_AVATAR = "SELECT avatar_url FROM users WHERE username = ?";
     private final static String GET_BY_USERNAME = "select * from users where username = ?";
     private final static String GET_USERNAME_BY_TOKEN = "select username from users where csrf_token = ?";
     private final static String GET_ALL = "select * from users";
@@ -29,8 +34,19 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String DELETE_CSRF_TOKEN = "UPDATE users SET csrf_token = NULL WHERE csrf_token = ?";
     private final static String ADD_CSRF_TOKEN = "UPDATE users SET csrf_token = ? WHERE username = ?";
     private final static String GET_BY_CSRF_TOKEN = "select * from users where csrf_token = ?";
-    private final static String ADD_NEW_USER = "INSERT INTO users (username, public_name, email, phone, password) " +
+    private final static String REGISTER_NEW_USER = "INSERT INTO users (username, public_name, email, phone, password) " +
             "VALUES (?, ?, ?, ?, ?);";
+    private final static String UPDATE_USER = "UPDATE users SET " +
+            "username = ?, " +
+            "public_name = ?, " +
+            "password = ?, " +
+            "email = ?, " +
+            "phone = ?, " +
+            "avatar_url = ?, " +
+            "description = ? " +
+            "WHERE user_id = ?";
+
+    private final static String DELETE_USER = "DELETE FROM users WHERE user_id = ?";
 
     public UserRepositoryImpl(DataSource dataSource, RowMapper<User> rowMapper) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -38,8 +54,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void create(User data) {
-
+    public void create(User user) {
+        jdbcTemplate.update(CREATE, user.getUsername(),
+                user.getPublicName(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getAvatarUrl(),
+                user.getDescription(),
+                user.getId());
     }
 
     @Override
@@ -67,26 +90,43 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean update(User type) {
-        return false;
+    public boolean update(User user) {
+        int rowsAffected = jdbcTemplate.update(UPDATE_USER,
+                user.getUsername(),
+                user.getPublicName(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getAvatarUrl(),
+                user.getDescription(),
+                user.getId());
+        return rowsAffected > 0;
     }
 
     @Override
-    public boolean delete(User type) {
-        return false;
+    public boolean delete(User user) {
+        int rowsAffected = jdbcTemplate.update(DELETE_USER, user.getId());
+        return rowsAffected > 0;
     }
-
 
     @Override
-    public List<User> getAllByName(String name) {
-        return null;
+    public String getAvatarPath(String username){
+        try {
+            return jdbcTemplate.queryForObject(GET_AVATAR, String.class, username);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
+
+
 
     @Override
     public String getUsernameByToken(String csrfToken) {
-        User user = jdbcTemplate.query(GET_USERNAME_BY_TOKEN, rowMapper, csrfToken).stream().findFirst().orElse(null);
-        if (user == null) return null;
-        return user.getUsername();
+        try {
+            return jdbcTemplate.queryForObject(GET_USERNAME_BY_TOKEN, String.class, csrfToken);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
@@ -106,8 +146,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void addNewUser(String username, String publicName, String email, String phoneNumber, String password) {
-        jdbcTemplate.update(ADD_NEW_USER, username, publicName, email, phoneNumber, password);
+    public void registerNewUser(String username, String publicName, String email, String phoneNumber, String password) {
+        jdbcTemplate.update(REGISTER_NEW_USER, username, publicName, email, phoneNumber, password);
     }
 
     @Override

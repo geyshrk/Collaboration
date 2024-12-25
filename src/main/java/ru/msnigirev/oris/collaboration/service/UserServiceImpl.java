@@ -65,8 +65,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addNewUser(String username, String publicName, String email, String phoneNumber, String password) {
-        userRepository.addNewUser(username, publicName, email, phoneNumber, password);
+    public void registerNewUser(String username, String publicName, String email, String phoneNumber, String password) {
+        userRepository.registerNewUser(username, publicName, email, phoneNumber, password);
     }
 
     @Override
@@ -79,4 +79,8 @@ public class UserServiceImpl implements UserService {
         userRepository.addAvatar(url, username);
     }
 
+    @Override
+    public String getAvatarPath(String username){
+        return userRepository.getAvatarPath(username);
+    }
 }

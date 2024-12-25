@@ -40,7 +40,7 @@ public class ContextListener implements ServletContextListener {
                 .baselineOnMigrate(true)
                 .dataSource(configuration.hikariDataSource())
                 .load();
-        flyway.migrate();
+//        flyway.migrate();
         UserRepository userRepository =
                 new UserRepositoryImpl(configuration.hikariDataSource(), new UserRowMapper());
 

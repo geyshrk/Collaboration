@@ -42,11 +42,14 @@ public class ProjectCreation extends HttpServlet {
         int creatorId = userService.getUser((String) req.getSession().getAttribute("username")).getId();
 
         String avatarUrl = null;
-        if (req.getPart("avatar") != null) {
+        if (req.getPart("avatar") != null && req.getPart("avatar").getSize() > 0) {
             avatarUrl = saveAvatar(req.getPart("avatar"), req.getServletContext().getRealPath("/"), projectName);
         }
-        File folder = new File(serverFolders + UUID.randomUUID() + "_" + projectName);
+        File folder = new File(req.getServletContext().getRealPath("/") + serverFolders.substring(1)
+                + UUID.randomUUID() + "_" + projectName);
         if (!folder.exists()) folder.mkdirs();
+
+        System.out.println(folder.getAbsolutePath());
         // Собираем инфу в ProjectDto
         ProjectDto projectDto = ProjectDto.builder()
                 .name(projectName)
@@ -56,10 +59,11 @@ public class ProjectCreation extends HttpServlet {
                 .subject(subjectName)
                 .institute(instituteName)
                 .year(year)
-                .folder(folder.getAbsolutePath())
+                .folder(serverFolders + folder.getName())
                 .avatar(avatarUrl)
                 .build();
         File constFolder = new File(folders, folder.getName());
+        System.out.println(constFolder.getAbsolutePath());
         if (!constFolder.exists()) constFolder.mkdirs();
         // Сохраняем проект (например, в базе данных)
         ProjectService projectService = (ProjectService) req.getServletContext().getAttribute("projectService");
@@ -77,7 +81,9 @@ public class ProjectCreation extends HttpServlet {
         }
 
         // Генерируем уникальное имя для аватара
-        String avatarFileName = UUID.randomUUID() + "_" + projectName;
+        String avatarName = avatarPart.getSubmittedFileName();
+        String avatarFileName = UUID.randomUUID() + "_" + projectName +
+                avatarName.substring(avatarName.lastIndexOf('.'));
         File avatarFile = new File(uploadDirFile, avatarFileName);
         File avatarFileServer = new File(contextPath + avatarsServer, avatarFileName);
         // Сохраняем аватар

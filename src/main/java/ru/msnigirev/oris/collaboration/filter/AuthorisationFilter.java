@@ -37,10 +37,12 @@ public class AuthorisationFilter extends HttpFilter {
             Cookie[] cookies = req.getCookies();
 
             Cookie csrfToken = null;
-            if (cookies != null) Arrays.stream(cookies)
-                    .filter(cookie -> cookie.getName().equals("csrf_token"))
-                    .findFirst()
-                    .orElse(null);
+            if (cookies != null) {
+               csrfToken = Arrays.stream(cookies)
+                        .filter(cookie -> cookie.getName().equals("csrf_token"))
+                        .findFirst()
+                        .orElse(null);
+            }
             if (csrfToken != null) {
                 UserService userService = (UserService) req.getServletContext().getAttribute("userService");
                 String actualToken = csrfToken.getValue();

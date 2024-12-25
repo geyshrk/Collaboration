@@ -12,6 +12,7 @@ import ru.msnigirev.oris.collaboration.repository.interfaces.ProjectAdminsReposi
 import ru.msnigirev.oris.collaboration.repository.interfaces.ProjectRepository;
 import ru.msnigirev.oris.collaboration.repository.interfaces.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -118,5 +119,13 @@ public class ProjectServiceImpl implements ProjectService {
         projectAdminsRepository.addNewRelation(projectRepository.getMaxId(), project.getCreatorId());
     }
 
+    @Override
+    public List<Project> getAll(int offset, int size) {
+       return projectRepository.getAll(offset, size);
+    }
+    @Override
+    public List<Project> searchByName(String name) {
+        return projectRepository.searchByName(name);
+    }
 
 }
