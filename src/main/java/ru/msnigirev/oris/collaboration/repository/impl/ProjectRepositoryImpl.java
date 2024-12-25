@@ -8,7 +8,6 @@ import ru.msnigirev.oris.collaboration.entity.Project;
 import ru.msnigirev.oris.collaboration.repository.interfaces.ProjectRepository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +21,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private final static String NEXT_ID = "SELECT MAX(id) FROM projects;";
     private final static String GET_ALL_WITH_LIMITATIONS = "SELECT * FROM projects OFFSET ? LIMIT ?";
     private final static String SEARCH_BY_NAME = "SELECT * FROM projects WHERE name LIKE CONCAT('%', ?, '%')";
+    private final static String ADD_AVATAR = "UPDATE projects SET avatar_url = ? WHERE id = ?";
+
     public ProjectRepositoryImpl(DataSource dataSource, RowMapper<Project> rowMapper) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.rowMapper = rowMapper;
@@ -71,6 +72,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Override
     public List<Project> searchByName(String name){
         return jdbcTemplate.query(SEARCH_BY_NAME, rowMapper, name);
+    }
+
+    @Override
+    public void addAvatar(String avatarUrl, int id) {
+       jdbcTemplate.update(ADD_AVATAR, avatarUrl, id);
     }
 
 }

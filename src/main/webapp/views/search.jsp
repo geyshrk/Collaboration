@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="ru.msnigirev.oris.collaboration.entity.Project" %>
-<%@ page import="java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -63,34 +62,29 @@
 <body>
 
 <div class="search-container">
-  <form action="<%= request.getContextPath() %>/search" method="get">
+  <form action="${pageContext.request.contextPath}/search" method="get">
     <input type="text" name="text" placeholder="Введите запрос" required>
     <button type="submit">Искать</button>
   </form>
 </div>
 
 <div class="results">
-  <%-- Пример рендеринга результатов поиска. Данные передаются из сервлета --%>
   <h2>Результат поиска: </h2>
   <ul class="result-item">
-    <%
-      List<Project> projects = (List<Project>) request.getAttribute("projects");
-      if (projects != null && !projects.isEmpty()) {
-        for (Project project : projects) {
-          String name = project.getName();
-          int id = project.getId();
-    %>
-    <li>
-      <a href="<%= request.getContextPath() %>/project?id=<%= id %>"><%= name %> </a>
-    </li>
-    <%
-      }
-    } else {
-    %>
-    <li>Ничего не найдено</li>
-    <%
-      }
-    %>
+    <c:choose>
+      <c:when test="${not empty projects}">
+        <c:forEach var="project" items="${projects}">
+          <li>
+            <a href="${pageContext.request.contextPath}/project?id=${project.id}">
+                ${project.name}
+            </a>
+          </li>
+        </c:forEach>
+      </c:when>
+      <c:otherwise>
+        <li>Ничего не найдено</li>
+      </c:otherwise>
+    </c:choose>
   </ul>
 </div>
 

@@ -24,4 +24,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     Optional<User> getByUsername(String username);
 
     String getUsernameById(int id);
+
+    int getIdByUsername(String username);
 }

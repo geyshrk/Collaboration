@@ -24,7 +24,6 @@ public class UserServiceImpl implements UserService {
                 .map(user -> new UserDto(user.getId(),
                         user.getUsername(),
                         user.getPublicName(),
-                        user.getDescription(),
                         user.getAvatarUrl()))
                 .toList();
     }
@@ -40,7 +39,6 @@ public class UserServiceImpl implements UserService {
         return new UserDto(user.getId(),
                 user.getUsername(),
                 user.getPublicName(),
-                user.getDescription(),
                 user.getAvatarUrl());
     }
     @Override

@@ -21,6 +21,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String ADD_AVATAR = "UPDATE users SET avatar_url = ? WHERE username = ?";
 
     private final static String GET_USERNAME_BY_ID = "select username from users where user_id = ?";
+    private final static String GET_ID_BY_USERNAME = "select user_id from users where username = ?";
 
     private final static String GET_BY_ID = "select * from users where user_id = ?";
     private final static String CREATE = "INSERT INTO users " +
@@ -61,7 +62,6 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getEmail(),
                 user.getPhone(),
                 user.getAvatarUrl(),
-                user.getDescription(),
                 user.getId());
     }
 
@@ -98,7 +98,6 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getEmail(),
                 user.getPhone(),
                 user.getAvatarUrl(),
-                user.getDescription(),
                 user.getId());
         return rowsAffected > 0;
     }
@@ -163,7 +162,21 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public String getUsernameById(int id) {
-        return jdbcTemplate.queryForObject(GET_USERNAME_BY_ID, String.class, id);
+        try {
+            return jdbcTemplate.queryForObject(GET_USERNAME_BY_ID, String.class, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+
+    }
+    @Override
+    public int getIdByUsername(String username) {
+        try {
+            return jdbcTemplate.queryForObject(GET_ID_BY_USERNAME, Integer.class, username);
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+
     }
 
 }

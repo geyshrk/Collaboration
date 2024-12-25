@@ -18,4 +18,6 @@ public interface ProjectRepository{
     List<Project> getAll(int offset, int size);
 
     List<Project> searchByName(String name);
+
+    void addAvatar(String avatarUrl, int id);
 }

@@ -19,7 +19,6 @@ public class UserRowMapper implements RowMapper<User> {
                 .email(resultSet.getString("email"))
                 .phone(resultSet.getString("phone"))
                 .avatarUrl(resultSet.getString("avatar_url"))
-                .description(resultSet.getString("description"))
                 .build();
     }
 

@@ -28,7 +28,7 @@ public class ProjectAdminsRepositoryImpl implements ProjectAdminsRepository {
     }
 
     @Override
-    public void addNewRelation(int projectId, int userId) {
-        jdbcTemplate.update(ADD_NEW_RELATION, projectId, userId);
+    public boolean addNewRelation(int projectId, int userId) {
+        return jdbcTemplate.update(ADD_NEW_RELATION, projectId, userId) == 1;
     }
 }

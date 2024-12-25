@@ -25,9 +25,9 @@ public class ProjectServlet extends HttpServlet {
         UserService userService = (UserService) req.getServletContext().getAttribute("userService");
         ProjectService projectService = (ProjectService) req.getServletContext().getAttribute("projectService");
 
-        // Получаем проект по ID
         ProjectDto project = projectService.getDtoById(Integer.parseInt(req.getParameter("id")));
         String creatorName = userService.getUsernameById(project.getCreatorId());
+        String username = (String) req.getSession().getAttribute("username");
 
         req.setAttribute("projectName", project.getName());
         req.setAttribute("avatarUrl", project.getAvatar());
@@ -37,8 +37,10 @@ public class ProjectServlet extends HttpServlet {
         req.setAttribute("subjectName", project.getSubject());
         req.setAttribute("instituteName", project.getInstitute());
         req.setAttribute("year", project.getYear());
-
-
+        req.setAttribute("id", project.getId());
+        req.setAttribute("message", req.getParameter("message") == null ? "" : req.getParameter("message"));
+        req.setAttribute("isAdmin", projectService.isAdmin(project.getId(), username));
+        req.setAttribute("isCreator", projectService.isCreator(project.getId(), username));
         String folder = req.getServletContext().getRealPath("/") + project.getFolder().substring(1);
 
         if (folder == null || folder.isEmpty()) {

@@ -1,6 +1,6 @@
-<%@ page import="ru.msnigirev.oris.collaboration.entity.Project" %>
-<%@ page import="java.util.List" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" session="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" session="false" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -14,34 +14,69 @@
       margin: 0;
       padding: 20px;
     }
-    h1, h2, h3 {
-      color: #212529;
-    }
     .container {
       background: #ffffff;
       padding: 20px;
       border-radius: 5px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
     }
     .avatar {
       width: 150px;
       height: 150px;
       border-radius: 50%;
       margin-bottom: 20px;
-      border: 2px solid #dee2e6;
     }
-    input[type="file"], input[type="submit"] {
-      margin-top: 10px;
-      padding: 10px;
+    .navigation a {
+      margin-right: 10px;
+      text-decoration: none;
+      color: #007bff;
+    }
+    .navigation a:hover {
+      text-decoration: underline;
+    }
+    .search-form {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .search-form input[type="text"] {
+      width: 300px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .search-form button {
+      padding: 5px 10px;
       background-color: #007bff;
-      color: #ffffff;
+      color: white;
       border: none;
-      border-radius: 3px;
+      border-radius: 5px;
       cursor: pointer;
     }
-    input[type="submit"]:hover {
+    .search-form button:hover {
       background-color: #0056b3;
+    }
+    .actions a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .btn-green {
+      background-color: #28a745;
+    }
+    .btn-red {
+      background-color: #dc3545;
+    }
+    .btn-green:hover {
+      background-color: #218838;
+    }
+    .btn-red:hover {
+      background-color: #c82333;
     }
     .popular-projects {
       list-style-type: none;
@@ -61,72 +96,49 @@
     .popular-projects li a:hover {
       text-decoration: underline;
     }
-    p {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 5px;
-    }
   </style>
 </head>
 <body>
 <div class="container">
-  <a href="<%= request.getContextPath() %>/index" style="text-decoration: none; color: #000; font-weight: bold; margin-right: 10px;">
-    На главную
-  </a>
-  <form action="<%= request.getContextPath() %>/search" method="get" style="flex-grow: 1; display: flex; align-items: center; justify-content: center;">
-    <input type="text" name="text" placeholder="Введите запрос для поиска"
-           style="width: 300px; padding: 5px; border: 1px solid #ccc; border-radius: 5px;" required />
-    <button type="submit" style="padding: 5px 10px; margin-left: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-      Искать
-    </button>
-  </form>
-
-  <div style="display: flex; align-items: center; gap: 10px;">
-    <a href="<%= request.getContextPath() %>/create"
-       style="text-decoration: none; color: #fff; background-color: #28a745; padding: 5px 10px; border-radius: 5px; font-weight: bold;">
-      Создать новый проект
-    </a>
-
-    <a href="<%= request.getContextPath() %>/logout"
-       style="text-decoration: none; color: #fff; background-color: #dc3545; padding: 5px 10px; border-radius: 5px; font-weight: bold;">
-      Выйти из аккаунта
-    </a>
+  <div class="navigation">
+    <a href="<c:url value='/index' />">На главную</a>
+    <form action="<c:url value='/search' />" method="get" class="search-form">
+      <input type="text" name="text" placeholder="Введите запрос для поиска" required />
+      <button type="submit">Искать</button>
+    </form>
+    <div class="actions">
+      <a href="<c:url value='/create' />" class="btn-green">Создать проект</a>
+      <a href="<c:url value='/logout' />" class="btn-red">Выйти</a>
+    </div>
   </div>
+
   <h1>Профиль</h1>
-  <img src="<%= request.getAttribute("avatar") %>" alt="Аватар" class="avatar">
-  <form action="avatarupload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" required>
-    <input type="submit" value="Загрузить">
+  <img src="<c:out value='${avatar}' />" alt="Аватар" class="avatar">
+  <form action="<c:url value='/avatarupload' />" method="post" enctype="multipart/form-data">
+    <input type="file" name="avatar" accept="image/*" required>
+    <button type="submit">Загрузить</button>
   </form>
-  <h2><%= "Имя: " + request.getAttribute("name") %></h2>
-  <h3><%= "Username: @" + request.getAttribute("username") %></h3>
+
+  <h2>Имя: <c:out value="${name}" /></h2>
+  <h3>Username: @<c:out value="${username}" /></h3>
 
   <h2>Самые популярные проекты:</h2>
   <ul class="popular-projects">
-    <%
-      List<Project> projects = (List<Project>) request.getAttribute("projects");
-      if (projects != null && !projects.isEmpty()) {
-        for (Project project : projects) {
-          String name = project.getName();
-          int id = project.getId();
-    %>
-    <li>
-      <a href="<%= request.getContextPath() %>/project?id=<%= id %>"><%= name %> </a>
-    </li>
-    <%
-      }
-    } else {
-    %>
-    <li>У пользователя пока нет проектов</li>
-    <%
-      }
-    %>
+    <c:choose>
+      <c:when test="${not empty projects}">
+        <c:forEach var="project" items="${projects}">
+          <li>
+            <a href="<c:url value='/project?id=${project.id}' />">
+              <c:out value="${project.name}" />
+            </a>
+          </li>
+        </c:forEach>
+      </c:when>
+      <c:otherwise>
+        <li>У пользователя пока нет проектов</li>
+      </c:otherwise>
+    </c:choose>
   </ul>
-
-  <h2>Описание профиля:</h2>
-  <p><%= request.getAttribute("description") %></p>
 </div>
 </body>
 </html>
-
-

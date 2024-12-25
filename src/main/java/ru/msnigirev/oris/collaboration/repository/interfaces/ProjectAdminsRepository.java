@@ -7,5 +7,5 @@ public interface ProjectAdminsRepository {
 
     List<Integer> getProjects(int userId);
 
-    void addNewRelation(int projectId, int userId);
+    boolean addNewRelation(int projectId, int userId);
 }

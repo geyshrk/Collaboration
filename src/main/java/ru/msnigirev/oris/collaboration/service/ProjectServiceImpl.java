@@ -12,7 +12,6 @@ import ru.msnigirev.oris.collaboration.repository.interfaces.ProjectAdminsReposi
 import ru.msnigirev.oris.collaboration.repository.interfaces.ProjectRepository;
 import ru.msnigirev.oris.collaboration.repository.interfaces.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -126,6 +125,32 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> searchByName(String name) {
         return projectRepository.searchByName(name);
+    }
+
+    @Override
+    public boolean addAdmin(String username, int projectId) {
+        User user = userRepository.getByUsername(username).orElse(null);
+        if (user == null) return false;
+        return projectAdminsRepository.addNewRelation(projectId, user.getId());
+    }
+
+    @Override
+    public void addAvatar(String avatarUrl, int id) {
+        projectRepository.addAvatar(avatarUrl, id);
+    }
+    @Override
+    public boolean isAdmin(int projectId, String username) {
+        int userId = userRepository.getIdByUsername(username);
+       return projectAdminsRepository.getAdmins(projectId).stream()
+               .anyMatch(id -> id == userId);
+    }
+    @Override
+    public boolean isCreator(int projectId, String username) {
+        Optional<Project> project = projectRepository.getById(projectId);
+        if (!project.isPresent()) return false;
+        String usernameById = userRepository.getUsernameById(project.get().getCreatorId());
+        if (usernameById == null) return false;
+        return usernameById.equals(username);
     }
 
 }

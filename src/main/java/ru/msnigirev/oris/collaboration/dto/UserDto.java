@@ -11,7 +11,6 @@ public class UserDto {
     private int id;
     private String username;
     private String publicName;
-    private String description;
     private String avatarUrl;
     /*
     CREATE TABLE users (

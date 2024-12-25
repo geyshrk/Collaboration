@@ -17,4 +17,12 @@ public interface ProjectService {
     public List<Project> getAll(int offset, int size);
 
     List<Project> searchByName(String name);
+
+    boolean addAdmin(String username, int projectId);
+
+    void addAvatar(String avatarUrl, int id);
+
+    boolean isAdmin(int projectId, String username);
+
+    boolean isCreator(int projectId, String username);
 }

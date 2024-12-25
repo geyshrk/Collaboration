@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import ru.msnigirev.oris.collaboration.entity.Project;
 import ru.msnigirev.oris.collaboration.entity.User;
+import ru.msnigirev.oris.collaboration.service.ProjectService;
 import ru.msnigirev.oris.collaboration.service.UserService;
 
 import java.io.File;
@@ -18,19 +20,20 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @MultipartConfig
-@WebServlet("/avatarupload")
-public class AvatarUploader extends HttpServlet {
+@WebServlet("/projectavatarupload")
+public class ProjectAvatarUploader extends HttpServlet {
 
-    private static final String UPLOAD_DIRECTORY = "/Users/misha/IdeaProjects/ITIS/Collaboration/src/main/webapp/resources/avatars";
-    private static final String DOWNLOAD_DIRECTORY = "/resources/avatars";
+    private static final String UPLOAD_DIRECTORY = "/Users/misha/IdeaProjects/ITIS/Collaboration/src/main/webapp/projects/avatars";
+    private static final String DOWNLOAD_DIRECTORY = "/projects/avatars";
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        UserService userService = (UserService) req.getServletContext().getAttribute("userService");
-        String username = (String) req.getSession().getAttribute("username");
-        User user = userService.getUser(username);
-        if (user.getAvatarUrl() != null) {
-            String avatarName = user.getAvatarUrl().substring(user.getAvatarUrl().lastIndexOf('/'));
+        ProjectService projectService = (ProjectService) req.getServletContext().getAttribute("projectService");
+
+        int id = Integer.parseInt(req.getParameter("projectId"));
+        Project project = projectService.getById(id);
+        if (project.getAvatar() != null) {
+            String avatarName = project.getAvatar().substring(project.getAvatar().lastIndexOf('/'));
             File deleteFile = new File(UPLOAD_DIRECTORY, avatarName);
             deleteFile.delete();
             deleteFile = new File(DOWNLOAD_DIRECTORY, avatarName);
@@ -63,12 +66,12 @@ public class AvatarUploader extends HttpServlet {
 
 
 
-            userService.addAvatar(avatarUrl, username);
+            projectService.addAvatar(avatarUrl, id);
 
-            res.sendRedirect(req.getContextPath() + "/profile");
+            res.sendRedirect(req.getContextPath() + "/project?id=" + id);
         } catch (IOException e) {
             e.printStackTrace();
-            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Файл не сохранен");
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Ошибка сохранения файла");
         }
     }
 }

@@ -22,8 +22,6 @@ public class ProfileServlet extends HttpServlet {
         req.setAttribute("name", user.getPublicName());
         req.setAttribute("avatar", user.getAvatarUrl());
         req.setAttribute("username", user.getUsername());
-        req.setAttribute("description", user.getDescription() == null ? "Пользователь еще не указал описание" : user.getDescription());
-
         req.getRequestDispatcher("/views/profile.jsp").forward(req, res);
         /*
           <h2><%= request.getAttribute("name") %></h2>
